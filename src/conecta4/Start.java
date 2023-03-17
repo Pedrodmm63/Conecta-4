@@ -10,7 +10,7 @@ public class Start {
 		Scanner teclado = new Scanner(System.in);
 		Tablero tablero = new Tablero();
 		
-		while(true) {
+		while(!tablero.isEsGanador()) {
 			int donde = teclado.nextInt();
 			tablero.coloca(donde);
 			System.out.println(tablero);
