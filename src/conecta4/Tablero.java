@@ -31,7 +31,7 @@ public class Tablero {
 
 	public void coloca(int donde) {
 
-		if (donde == 6) {
+		if (donde >= 6) {
 			donde = 6;
 		}
 
@@ -40,20 +40,47 @@ public class Tablero {
 			tablero[huecosColumnas[donde]][donde] = turno;
 			huecosColumnas[donde]--;
 //				GanadorVertical(turno,huecosColumnas[donde], donde);
-//				GanadorVertical(huecosColumnas[donde], donde);
-			turno = (turno == 'X') ? 'O' : 'X';
+//			
 			esGanador = GanadorVertical(donde, donde);
-			esGanador = esGanador || GanadorHorizontal(donde, donde);
+			esGanador = esGanador || GanadorHorizontal(huecosColumnas[donde]+1, donde);
+			esGanador = esGanador || GanadorDiagonal(huecosColumnas[donde]+1, donde);
+			turno = (turno == 'X') ? 'O' : 'X';
 		}
 
 	}
-
-	private boolean GanadorHorizontal(int fila, int columna) {
-		
+	public boolean GanadorDiagonal(int fila, int columna) {
+		char ficha = tablero[fila][columna];
 		int contador = 0;
 		int posicion = 0;
-		while(contador != 4 && posicion < columna) {
-			if(tablero[fila][posicion] == turno) {
+		
+		int resta = (fila<columna) ? fila : columna;
+		
+		while(contador <4 && fila < filas & columna < columnas) {
+			if(tablero[fila][posicion] == tablero[fila][columna]) {
+				contador++;
+				fila++;
+				columna++;
+				
+			}
+			else contador = 0;
+			posicion++;
+		}
+		
+		if(contador == 4) {
+			esGanador = true;
+		}
+		
+		
+		return esGanador;
+	}
+
+	private boolean GanadorHorizontal(int fila, int columna) {
+		char ficha = tablero[fila][columna];
+		int contador = 0;
+		int posicion = 0;
+		
+		while(contador < 4 && posicion < columnas) {
+			if(tablero[fila][posicion] == tablero[fila][columna]) {
 				contador++;
 				
 			}
@@ -98,10 +125,12 @@ public class Tablero {
 
 					coincidencia++;
 				}
+				
+				else coincidencia = 0;
 			}
 		}
 
-		if (coincidencia == 3) {
+		if (coincidencia == 4) {
 			esGanador = true;
 		}
 		return esGanador;
