@@ -4,95 +4,105 @@ import java.util.Arrays;
 
 public class Tablero {
 
-	private int columnas = 7;
-	private int filas = 6;
-	private char[][] tablero = new char[filas][columnas];
+	private int COLUMNAS = 7;
+	private int FILAS = 6;
+	private char[][] tablero = new char[FILAS][COLUMNAS];
 	private int[] huecosColumnas = new int[7];
 	private char turno;
 	private boolean esGanador;
 
 	public Tablero() {
 
-		for (int i = 0; i < filas; i++) {
+		for (int i = 0; i < FILAS; i++) {
 
-			for (int j = 0; j < columnas; j++) {
+			for (int j = 0; j < COLUMNAS; j++) {
 
 				tablero[i][j] = '-';
 			}
 		}
 
-		for (int i = 0; i < columnas; i++) {
-			huecosColumnas[i] = filas - 1;
+		for (int i = 0; i < COLUMNAS; i++) {
+			huecosColumnas[i] = FILAS - 1;
 		}
 		turno = 'X';
 
 		esGanador = false;
 	}
 
-	public void coloca(int donde) {
+	public void coloca(int columna) {
 
-		if (donde >= 6) {
-			donde = 6;
+		if (columna >= 6) {
+			columna = 6;
 		}
 
-		if (tablero[huecosColumnas[donde]][donde] == '-') {
+		if (tablero[huecosColumnas[columna]][columna] == '-') {
 
-			tablero[huecosColumnas[donde]][donde] = turno;
-			huecosColumnas[donde]--;
+			tablero[huecosColumnas[columna]][columna] = turno;
+			huecosColumnas[columna]--;
 //				GanadorVertical(turno,huecosColumnas[donde], donde);
 //			
-			esGanador = GanadorVertical(donde, donde);
-			esGanador = esGanador || GanadorHorizontal(huecosColumnas[donde]+1, donde);
-			esGanador = esGanador || GanadorDiagonal(huecosColumnas[donde]+1, donde);
+			esGanador = GanadorVertical(huecosColumnas[columna] + 1, columna);
+			esGanador = esGanador || GanadorHorizontal(huecosColumnas[columna] + 1, columna);
+			esGanador = esGanador || GanadorDiagonal1(huecosColumnas[columna]+1, columna);
 			turno = (turno == 'X') ? 'O' : 'X';
 		}
 
 	}
-	public boolean GanadorDiagonal(int fila, int columna) {
+
+	public boolean GanadorDiagonal1(int fila, int columna) {
 		char ficha = tablero[fila][columna];
 		int contador = 0;
-		int posicion = 0;
-		
-		int resta = (fila<columna) ? fila : columna;
-		
-		while(contador <4 && fila < filas & columna < columnas) {
-			if(tablero[fila][posicion] == tablero[fila][columna]) {
+		int retroceso = (fila < columna) ? fila : columna;
+		int i = fila - retroceso;
+		int j = columna - retroceso;
+
+		while ((i < FILAS) && (j < COLUMNAS) && (contador < 4)) {
+			if (tablero[i][j] == ficha) {
 				contador++;
-				fila++;
-				columna++;
-				
-			}
-			else contador = 0;
-			posicion++;
+			} else
+				contador = 0;
+			i++;
+			j++;
 		}
-		
-		if(contador == 4) {
-			esGanador = true;
+		boolean devolver = false;
+		if (contador == 4) {
+			devolver = true;
 		}
-		
-		
-		return esGanador;
+
+		return devolver;
+
 	}
 
-	private boolean GanadorHorizontal(int fila, int columna) {
+	public boolean GanadorDiagonal2(int fila, int columna) {
+		int contador = 0;
+		
+		boolean devolver = false;
+		if (contador == 4) {
+			devolver = true;
+		}
+		return devolver;
+	}
+
+	public boolean GanadorHorizontal(int fila, int columna) {
 		char ficha = tablero[fila][columna];
 		int contador = 0;
 		int posicion = 0;
-		
-		while(contador < 4 && posicion < columnas) {
-			if(tablero[fila][posicion] == tablero[fila][columna]) {
+
+		while (contador < 4 && posicion < COLUMNAS) {
+			if (tablero[fila][posicion] == tablero[fila][columna]) {
 				contador++;
-				
-			}
-			else contador = 0;
+
+			} else
+				contador = 0;
 			posicion++;
 		}
-		
-		if(contador == 4) {
-			esGanador = true;
+
+		boolean devolver = false;
+		if (contador == 4) {
+			devolver = true;
 		}
-		
-		return esGanador;
+
+		return devolver;
 	}
 
 	public boolean isEsGanador() {
@@ -120,40 +130,42 @@ public class Tablero {
 		char mirarChar = tablero[fila][columna];
 
 		if (fila <= 2) {
-			for (int i = fila + 1; i < fila + 3; i++) {
+			for (int i = fila + 1; i <= fila + 3; i++) {
 				if (tablero[i][columna] == mirarChar) {
 
 					coincidencia++;
 				}
-				
-				else coincidencia = 0;
+
+				else
+					coincidencia = 0;
 			}
 		}
 
-		if (coincidencia == 4) {
-			esGanador = true;
+		boolean devolver = false;
+		if (coincidencia == 3) {
+			devolver = true;
 		}
-		return esGanador;
+		return devolver;
 	}
 
 	@Override
 	public String toString() {
 		String devolver = "";
 
-		for (int i = 0; i < filas; i++) {
-			for (int j = 0; j < columnas; j++) {
+		for (int i = 0; i < FILAS; i++) {
+			for (int j = 0; j < COLUMNAS; j++) {
 				devolver += tablero[i][j] + " ";
 			}
 			devolver += "\n";
 
 		}
 		devolver += "_ _ _ _ _ _ _  \n";
-		for (int i = 0; i < columnas; i++) {
+		for (int i = 0; i < COLUMNAS; i++) {
 			devolver += i + " ";
 		}
-		
-		if(esGanador) {
-			devolver += "\n ya gano alquien";
+
+		if (esGanador) {
+			devolver += "\n ya ganó alquien";
 		}
 		return devolver;
 
